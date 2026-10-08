@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "PlaceItem": {
+      "title": "PlaceItem",
+      "description": "A food spot or destination suggested by group members.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Name of the restaurant, food, or place",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the item",
+          "enum": ["food", "place"]
+        },
+        "locationName": {
+          "type": "string",
+          "description": "Neighborhood or address description",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "lat": {
+          "type": "number",
+          "description": "Latitude coordinate for map pin"
+        },
+        "lng": {
+          "type": "number",
+          "description": "Longitude coordinate for map pin"
+        },
+        "suggestedBy": {
+          "type": "string",
+          "description": "Name of the friend who suggested this item",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "isVisited": {
+          "type": "boolean",
+          "description": "Whether the group has visited and tried this place"
+        },
+        "visitedDate": {
+          "type": "string",
+          "description": "Date string when visited",
+          "maxLength": 40
+        },
+        "isPinned": {
+          "type": "boolean",
+          "description": "Whether this item is pinned to the top of the list"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional extra notes or description",
+          "maxLength": 500
+        },
+        "images": {
+          "type": "array",
+          "description": "List of optional image data URLs or URLs (up to 4)"
+        },
+        "ratings": {
+          "type": "array",
+          "description": "List of rating objects from friends (up to 30)"
+        },
+        "averageRating": {
+          "type": "number",
+          "description": "Calculated average score from 0 to 5"
+        },
+        "ratingsCount": {
+          "type": "number",
+          "description": "Total number of ratings submitted"
+        },
+        "groupKey": {
+          "type": "string",
+          "description": "Group identifier key for shared querying",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp in milliseconds"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Last update timestamp in milliseconds"
+        }
+      },
+      "required": [
+        "title",
+        "category",
+        "locationName",
+        "lat",
+        "lng",
+        "suggestedBy",
+        "isVisited",
+        "isPinned",
+        "images",
+        "ratings",
+        "averageRating",
+        "ratingsCount",
+        "groupKey",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/places/{placeId}": {
+      "schema": {
+        "$ref": "#/entities/PlaceItem"
+      },
+      "description": "Shared group wishlist items for food and places"
+    }
+  }
+}

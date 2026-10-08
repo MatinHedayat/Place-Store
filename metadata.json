@@ -1,0 +1,6 @@
+{
+  "name": "پاتوق‌یاب — لیست شکم‌گردی و گردشگری دوستان",
+  "description": "اپلیکیشن اشتراکی گروه دوستان برای ثبت رستوران‌ها، غذاها و جاهای دیدنی روی نقشه به همراه نظرسنجی و امتیازدهی",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

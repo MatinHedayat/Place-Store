@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+    direction: rtl;
+  }
+}
+
+.leaflet-container {
+  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif !important;
+  z-index: 10;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  padding: 2px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px !important;
+  direction: rtl;
+  text-align: right;
+  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif !important;
+}
+

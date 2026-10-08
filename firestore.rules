@@ -1,0 +1,105 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidPlaceItem(data) {
+      return data.keys().hasAll([
+        'title',
+        'category',
+        'locationName',
+        'lat',
+        'lng',
+        'suggestedBy',
+        'isVisited',
+        'isPinned',
+        'images',
+        'ratings',
+        'averageRating',
+        'ratingsCount',
+        'groupKey',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'title',
+        'category',
+        'locationName',
+        'lat',
+        'lng',
+        'suggestedBy',
+        'isVisited',
+        'visitedDate',
+        'isPinned',
+        'notes',
+        'images',
+        'ratings',
+        'averageRating',
+        'ratingsCount',
+        'groupKey',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.title is string && data.title.size() >= 1 && data.title.size() <= 120 &&
+      data.category is string && (data.category == 'food' || data.category == 'place') &&
+      data.locationName is string && data.locationName.size() >= 1 && data.locationName.size() <= 160 &&
+      data.lat is number && data.lat >= -90 && data.lat <= 90 &&
+      data.lng is number && data.lng >= -180 && data.lng <= 180 &&
+      data.suggestedBy is string && data.suggestedBy.size() >= 1 && data.suggestedBy.size() <= 60 &&
+      data.isVisited is bool &&
+      (!('visitedDate' in data) || (data.visitedDate is string && data.visitedDate.size() <= 40)) &&
+      data.isPinned is bool &&
+      (!('notes' in data) || (data.notes is string && data.notes.size() <= 500)) &&
+      data.images is list && data.images.size() <= 4 &&
+      (data.images.size() == 0 || (data.images[0] is string && data.images[0].size() <= 700000)) &&
+      data.ratings is list && data.ratings.size() <= 30 &&
+      (data.ratings.size() == 0 || (data.ratings[0] is map)) &&
+      data.averageRating is number && data.averageRating >= 0 && data.averageRating <= 5 &&
+      data.ratingsCount is number && data.ratingsCount >= 0 && data.ratingsCount <= 30 &&
+      data.groupKey is string && data.groupKey == 'friends-default' &&
+      data.createdAt is number &&
+      data.updatedAt is number;
+    }
+
+    match /places/{placeId} {
+      allow get: if isValidId(placeId) && existing().groupKey == 'friends-default';
+      allow list: if existing().groupKey == 'friends-default';
+      allow create: if isValidId(placeId) && isValidPlaceItem(incoming());
+      allow update: if isValidId(placeId) && isValidPlaceItem(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().groupKey == existing().groupKey &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'title',
+          'category',
+          'locationName',
+          'lat',
+          'lng',
+          'suggestedBy',
+          'isVisited',
+          'visitedDate',
+          'isPinned',
+          'notes',
+          'images',
+          'ratings',
+          'averageRating',
+          'ratingsCount',
+          'updatedAt'
+        ]);
+      allow delete: if isValidId(placeId) && existing().groupKey == 'friends-default';
+    }
+  }
+}
